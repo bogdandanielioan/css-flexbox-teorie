@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial Flexbox – Exemple Practice</title>
+  <style>
+    :root{
+      --bg:#f9fafb;--fg:#111827;--accent:#2563eb;--accent-light:#dbeafe;--code-bg:#1f2937;--code-fg:#f3f4f6;--border:#e5e7eb;--muted:#6b7280;--mono:"Fira Code",Consolas,monospace;--sans:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI";--radius:12px;
+    }
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{margin:0;font-family:var(--sans);background:var(--bg);color:var(--fg);line-height:1.6;}
+    header{background:white;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:999;}
+    .wrap{max-width:1100px;margin:0 auto;padding:0 1rem;}
+    nav{display:flex;flex-wrap:wrap;gap:.5rem;padding:.75rem 0;}
+    nav a{padding:.35rem .7rem;border-radius:var(--radius);text-decoration:none;color:var(--fg);font-size:.9rem;}
+    nav a:hover{background:var(--accent-light);color:var(--accent);}
+    h1,h2,h3{line-height:1.25;scroll-margin-top:4.5rem;}
+    h1{margin:.8rem 0 1.2rem;font-size:2.1rem;color:var(--accent);}    
+    section{background:white;margin:1.5rem 0;padding:1.2rem 1.5rem 2rem;border:1px solid var(--border);border-radius:var(--radius);}
+    code,pre{font-family:var(--mono);}
+    pre{background:var(--code-bg);color:var(--code-fg);padding:1rem;border-radius:var(--radius);overflow:auto;font-size:.85rem;position:relative;}
+    .btn-copy{position:absolute;top:.6rem;right:.6rem;font-size:.7rem;background:var(--accent);color:white;border:none;border-radius:6px;padding:.25rem .55rem;cursor:pointer;}
+    .example{border:2px dashed var(--accent-light);padding:1rem;margin:1rem 0;border-radius:var(--radius);background:#fff;}
+    .flex-demo{display:flex;gap:.5rem;min-height:60px;padding:.5rem;border:1px dashed var(--border);background:#f3f4f6;border-radius:8px;}
+    .box{background:var(--accent);color:white;padding:10px 12px;border-radius:6px;font-size:.8rem;text-align:center;}
+    .muted{color:var(--muted);font-size:.9rem;}
+    details{margin:1rem 0;border:1px solid var(--border);border-radius:var(--radius);background:#fdfdfd;}
+    details summary{cursor:pointer;padding:.6rem 1rem;font-weight:600;}
+    details[open] summary{border-bottom:1px solid var(--border);background:#fafafa;}
+    table{border-collapse:collapse;width:100%;font-size:.9rem;margin:1rem 0;}
+    th,td{border:1px solid var(--border);padding:.5rem .6rem;text-align:left;}
+    th{background:#f3f4f6;}
+    footer{padding:3rem 0 4rem;text-align:center;color:var(--muted);}
+    /* Culori pentru iteme */
+    .c1{background:#2563eb}.c2{background:#10b981}.c3{background:#f97316}.c4{background:#8b5cf6}.c5{background:#ef4444}.c6{background:#0ea5e9}
+
+    /* Exemple layout */
+    .nav-bar{display:flex;justify-content:space-between;align-items:center;padding:.6rem 1rem;background:#111827;color:white;border-radius:8px;}
+    .nav-bar ul{display:flex;gap:1rem;list-style:none;margin:0;padding:0;}
+    .cards{display:flex;flex-wrap:wrap;gap:1rem;}
+    .card{flex:1 1 calc(33% - 1rem);background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:1rem;min-width:220px;}
+    @media(max-width:700px){.card{flex-basis:calc(50% - 1rem);} }
+    @media(max-width:500px){.card{flex-basis:100%;} }
+    .holy-grail{display:flex;min-height:180px;border:1px solid var(--border);border-radius:8px;}
+    .hg-main{flex:1;padding:1rem;background:#fff;}
+    .hg-side{flex:0 0 200px;padding:1rem;background:#f3f4f6;}
+    @media(max-width:800px){.holy-grail{flex-direction:column;}.hg-side{flex-basis:auto;}}
+    .center-wrapper{display:flex;justify-content:center;align-items:center;height:200px;background:#f3f4f6;border-radius:8px;}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <nav aria-label="Meniu principal">
+        <a href="#intro">Intro</a>
+        <a href="#sintaxa">Sintaxă</a>
+        <a href="#container">Proprietăți container</a>
+        <a href="#item">Proprietăți item</a>
+        <a href="#ex-layout">Layout-uri comune</a>
+        <a href="#avansate">Avansate</a>
+        <a href="#patterns">Pattern-uri</a>
+        <a href="#exercitii">Exerciții</a>
+        <a href="#cheatsheet">Cheatsheet</a>
+        <a href="#faq">FAQ</a>
+        <a href="#debug">Debug</a>
+        <a href="#resurse">Resurse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section id="intro">
+      <h1>Flexbox – ghid complet cu exemple</h1>
+      <p>Flexbox (Flexible Box Layout) este un modul CSS care facilitează alinierea și distribuirea spațiului între elemente într-un container, chiar și atunci când dimensiunile acestora sunt necunoscute sau dinamice. Acest tutorial include explicații concise și multe exemple vizuale pe care le poți copia rapid.</p>
+    </section>
+
+    <section id="sintaxa">
+      <h2>Sintaxă de bază</h2>
+      <pre><button class="btn-copy" data-copy>Copy</button><code>.container {
+  display: flex; /* sau inline-flex */
+}
+.item {
+  flex: 1 1 auto; /* flex-grow flex-shrink flex-basis */
+}</code></pre>
+      <p class="muted">Setează <code>display:flex</code> pe părinte pentru a activa contextul flex; copiii devin „flex items”.</p>
+    </section>
+
+    <section id="container">
+      <h2>Proprietăți pe container</h2>
+      <table>
+        <thead><tr><th>Proprietate</th><th>Valori</th><th>Ce face</th></tr></thead>
+        <tbody>
+          <tr><td><code>flex-direction</code></td><td>row | row-reverse | column | column-reverse</td><td>Direcția axei principale</td></tr>
+          <tr><td><code>flex-wrap</code></td><td>nowrap | wrap | wrap-reverse</td><td>Permite elementelor să treacă pe rânduri/coloane noi</td></tr>
+          <tr><td><code>flex-flow</code></td><td><em>direction</em> <em>wrap</em></td><td>Shortcut pentru direcție + wrap</td></tr>
+          <tr><td><code>justify-content</code></td><td>flex-start | center | space-between | space-around | space-evenly ...</td><td>Aliniere pe axa principală</td></tr>
+          <tr><td><code>align-items</code></td><td>stretch | flex-start | center | baseline | flex-end</td><td>Aliniere pe axa transversală</td></tr>
+          <tr><td><code>align-content</code></td><td>stretch | flex-start | center | space-between | space-around | flex-end</td><td>Aliniere a liniilor (când avem wrap)</td></tr>
+          <tr><td><code>gap</code></td><td><em>lungime</em></td><td>Spațiu între itemi (row-gap / column-gap)</td></tr>
+        </tbody>
+      </table>
+
+      <!-- Exemple interactive -->
+      <details open>
+        <summary>Exemplu: flex-direction</summary>
+        <div class="example">
+          <div class="flex-demo" style="flex-direction:row;">
+            <div class="box c1">1</div>
+            <div class="box c2">2</div>
+            <div class="box c3">3</div>
+          </div>
+          <div class="flex-demo" style="flex-direction:column; height:120px;">
+            <div class="box c1">1</div>
+            <div class="box c2">2</div>
+            <div class="box c3">3</div>
+          </div>
+          <pre><button class="btn-copy" data-copy>Copy</button><code>.flex-demo{display:flex;}
+.flex-demo.row{flex-direction:row;}
+.flex-demo.col{flex-direction:column;}</code></pre>
+        </div>
+      </details>
+
+      <details>
+        <summary>Exemplu: justify-content</summary>
+        <div class="example">
+          <div class="flex-demo" style="justify-content:flex-start;">
+            <div class="box c1">A</div><div class="box c2">B</div><div class="box c3">C</div>
+          </div>
+          <div class="flex-demo" style="justify-content:center;">
+            <div class="box c1">A</div><div class="box c2">B</div><div class="box c3">C</div>
+          </div>
+          <div class="flex-demo" style="justify-content:space-between;">
+            <div class="box c1">A</div><div class="box c2">B</div><div class="box c3">C</div>
+          </div>
+          <pre><button class="btn-copy" data-copy>Copy</button><code>.container{display:flex;justify-content:space-between;}</code></pre>
+        </div>
+      </details>
+
+      <details>
+        <summary>Exemplu: align-items & gap</summary>
+        <div class="example">
+          <div class="flex-demo" style="align-items:flex-start;gap:4px;height:100px;">
+            <div class="box c1" style="height:25px">1</div>
+            <div class="box c2" style="height:50px">2</div>
+            <div class="box c3" style="height:35px">3</div>
+          </div>
+          <div class="flex-demo" style="align-items:center;gap:16px;height:100px;">
+            <div class="box c1" style="height:25px">1</div>
+            <div class="box c2" style="height:50px">2</div>
+            <div class="box c3" style="height:35px">3</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="item">
+      <h2>Proprietăți pe item</h2>
+      <table>
+        <thead><tr><th>Proprietate</th><th>Valori</th><th>Ce face</th></tr></thead>
+        <tbody>
+          <tr><td><code>order</code></td><td>număr întreg</td><td>Schimbă ordinea vizuală (implicit 0)</td></tr>
+          <tr><td><code>flex-grow</code></td><td>număr</td><td>Cât spațiu suplimentar ia un item</td></tr>
+          <tr><td><code>flex-shrink</code></td><td>număr</td><td>Cât de mult se micșorează când nu e loc</td></tr>
+          <tr><td><code>flex-basis</code></td><td>auto | lungime | %</td><td>Dimensiunea inițială înainte de distribuirea spațiului</td></tr>
+          <tr><td><code>flex</code></td><td>grow shrink basis</td><td>Shortcut pentru cele trei de mai sus</td></tr>
+          <tr><td><code>align-self</code></td><td>auto | flex-start | center | flex-end | stretch | baseline</td><td>Aliniere individuală pe axa transversală</td></tr>
+        </tbody>
+      </table>
+
+      <details open>
+        <summary>Exemplu: order</summary>
+        <div class="example">
+          <div class="flex-demo" style="">
+            <div class="box c1" style="order:3">1 (order 3)</div>
+            <div class="box c2" style="order:1">2 (order 1)</div>
+            <div class="box c3" style="order:2">3 (order 2)</div>
+          </div>
+          <pre><button class="btn-copy" data-copy>Copy</button><code>.item1{order:3}
+.item2{order:1}
+.item3{order:2}</code></pre>
+        </div>
+      </details>
+
+      <details>
+        <summary>Exemplu: flex-grow / flex-basis</summary>
+        <div class="example">
+          <div class="flex-demo" style="">
+            <div class="box c1" style="flex:1 1 80px">1</div>
+            <div class="box c2" style="flex:2 1 80px">2</div>
+            <div class="box c3" style="flex:1 1 80px">3</div>
+          </div>
+          <pre><button class="btn-copy" data-copy>Copy</button><code>.item-a{flex:1 1 80px}
+.item-b{flex:2 1 80px} /* Dublu spațiu față de A */
+.item-c{flex:1 1 80px}</code></pre>
+        </div>
+      </details>
+
+      <details>
+        <summary>Exemplu: align-self</summary>
+        <div class="example">
+          <div class="flex-demo" style="align-items:flex-end;height:120px;">
+            <div class="box c1" style="align-self:flex-start;height:40px;">start</div>
+            <div class="box c2" style="align-self:center;height:60px;">center</div>
+            <div class="box c3" style="height:70px;">end (moștenit)</div>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="ex-layout">
+      <h2>Layout-uri comune cu Flexbox</h2>
+
+      <h3>1. Navbar simplu</h3>
+      <div class="example">
+        <div class="nav-bar">
+          <div class="logo">Logo</div>
+          <ul>
+            <li>Acasă</li><li>Blog</li><li>Contact</li>
+          </ul>
+        </div>
+        <pre><button class="btn-copy" data-copy>Copy</button><code>.nav-bar{display:flex;justify-content:space-between;align-items:center;}</code></pre>
+      </div>
+
+      <h3>2. Carduri responsive (3 pe rând → 2 → 1)</h3>
+      <div class="example">
+        <div class="cards">
+          <div class="card">Card 1</div>
+          <div class="card">Card 2</div>
+          <div class="card">Card 3</div>
+          <div class="card">Card 4</div>
+          <div class="card">Card 5</div>
+        </div>
+      <pre><button class="btn-copy" data-copy>Copy</button><code>.cards{display:flex;flex-wrap:wrap;gap:1rem;}
+.card{flex:1 1 calc(33% - 1rem);} /* media queries pt. 50%/100% */</code></pre>
+      </div>
+
+      <h3>3. „Holy Grail Layout” (două sidebars + conținut)</h3>
+      <div class="example">
+        <div class="holy-grail">
+          <aside class="hg-side">Left</aside>
+          <main class="hg-main">Content</main>
+          <aside class="hg-side">Right</aside>
+        </div>
+        <pre><button class="btn-copy" data-copy>Copy</button><code>.holy-grail{display:flex;}
+.hg-side{flex:0 0 200px}
+.hg-main{flex:1}</code></pre>
+      </div>
+
+      <h3>4. Centrare perfectă pe orizontală și verticală</h3>
+      <div class="example">
+        <div class="center-wrapper"><div class="box c6">Centrat!</div></div>
+        <pre><button class="btn-copy" data-copy>Copy</button><code>.center-wrapper{display:flex;justify-content:center;align-items:center;}</code></pre>
+      </div>
+
+      <h3>5. Footer lipit jos (sticky footer)</h3>
+      <div class="example">
+        <pre><button class="btn-copy" data-copy>Copy</button><code>body{min-height:100vh;display:flex;flex-direction:column;}
+main{flex:1}
+footer{margin-top:auto}</code></pre>
+        <p class="muted">Folosești flex-direction:column pe <code>body</code> și împingi <code>footer</code>-ul cu <code>margin-top:auto</code>.</p>
+      </div>
+    </section>
+
+    <section id="avansate">
+      <h2>Concepte avansate & capcane uzuale</h2>
+      <h3>Axe & spații libere</h3>
+      <p>Axa principală (<em>main axis</em>) este definită de <code>flex-direction</code>. Axa transversală (<em>cross axis</em>) e perpendiculară. <code>justify-content</code> aliniază pe axa principală, <code>align-items</code> pe cea transversală.</p>
+      <h3>Auto margins</h3>
+      <p><code>margin-left:auto</code> (sau top/right/bottom, depinde de axă) împinge un element la capătul liber al containerului, util în navbars.</p>
+      <pre><button class="btn-copy" data-copy>Copy</button><code>.nav{display:flex}
+.nav a:last-child{margin-left:auto}</code></pre>
+      <h3>Min/Max size & overflow</h3>
+      <p>Flexbox va ignora uneori <code>width</code>/<code>height</code> în favoarea lui <code>flex-basis</code>. Fii explicit: <code>flex:0 0 200px</code> dacă vrei o lățime fixă.</p>
+      <h3>Shorthand-ul <code>flex</code></h3>
+      <ul>
+        <li><code>flex:1</code> ≈ <code>1 1 0</code></li>
+        <li><code>flex:auto</code> ≈ <code>1 1 auto</code></li>
+        <li><code>flex:none</code> ≈ <code>0 0 auto</code></li>
+      </ul>
+      <h3>Performanță & accesibilitate</h3>
+      <p>Ordinea vizuală (<code>order</code>) nu schimbă ordinea în DOM: cititoarele de ecran, tab focus sau scroll anchoring pot rămâne pe ordinea originală.</p>
+    </section>
+
+    <section id="patterns">
+      <h2>Pattern-uri utile</h2>
+      <details open>
+        <summary>Media object (avatar + conținut)</summary>
+        <div class="example">
+          <div class="flex-demo" style="align-items:flex-start;">
+            <img src="https://placekitten.com/64/64" alt="avatar" style="border-radius:50%;flex:0 0 64px;" />
+            <div style="flex:1;padding:0 .5rem;">Conținut lung aici, text, etc.</div>
+            <button class="box c2" style="flex:0 0 auto;">Acțiune</button>
+          </div>
+          <pre><button class="btn-copy" data-copy>Copy</button><code>.media{display:flex;align-items:flex-start}
+.media img{flex:0 0 64px;border-radius:50%}
+.media-body{flex:1;padding:0 .5rem}</code></pre>
+        </div>
+      </details>
+      <details>
+        <summary>Sidebar fix + conținut fluid</summary>
+        <div class="example">
+          <div class="flex-demo" style="">
+            <aside class="box c4" style="flex:0 0 180px;">Sidebar</aside>
+            <main class="box c6" style="flex:1 1 auto;">Conținut</main>
+          </div>
+        </div>
+      </details>
+      <details>
+        <summary>Buton grup (button group)</summary>
+        <div class="example">
+          <div class="flex-demo" style="gap:0;">
+            <button class="box c1" style="border-radius:6px 0 0 6px;">Stânga</button>
+            <button class="box c1" style="border-radius:0;">Mijloc</button>
+            <button class="box c1" style="border-radius:0 6px 6px 0;">Dreapta</button>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <section id="exercitii">
+      <h2>Exerciții practice</h2>
+      <ol>
+        <li>Recreează o bară de navigație cu logo la stânga și buton „Login” la dreapta cu <code>margin-left:auto</code>.</li>
+        <li>Fă un grid de carduri responsive doar cu Flexbox (fără Grid), 4 / 2 / 1 pe rând.</li>
+        <li>Construiește un layout tip chat: listă de mesaje într-o coloană, input fix jos.</li>
+        <li>Implementează un sticky footer doar cu flex-direction:column.</li>
+        <li>Joacă-te cu <code>order</code> pentru a reordona cardurile pe mobil.</li>
+      </ol>
+      <p class="muted">Poți verifica soluțiile cu inspectorul și devtools.</p>
+    </section>
+
+    <section id="cheatsheet">
+      <h2>Cheatsheet rapid</h2>
+      <table>
+        <thead><tr><th>Țintă</th><th>Cod</th><th>Rezultat</th></tr></thead>
+        <tbody>
+          <tr><td>Centrare totală</td><td><code>display:flex;justify-content:center;align-items:center;</code></td><td>Element centrat perfect</td></tr>
+          <tr><td>Element întins pe restul spațiului</td><td><code>flex:1</code></td><td>Umple spațiul disponibil</td></tr>
+          <tr><td>Dimensiune fixă</td><td><code>flex:0 0 200px;</code></td><td>Lățime fixă 200px</td></tr>
+          <tr><td>Split 2 coloane egale</td><td><code>.col{flex:1}</code></td><td>Fiecare ia 50%</td></tr>
+          <tr><td>Rânduri multiple</td><td><code>flex-wrap:wrap</code></td><td>Itemii trec pe linie nouă</td></tr>
+          <tr><td>Spațiu egal între itemi</td><td><code>justify-content:space-between</code></td><td>Primul la stânga, ultimul la dreapta</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="faq">
+      <h2>Întrebări frecvente</h2>
+      <details>
+        <summary>De ce nu funcționează <code>height:100%</code> într-un item?</summary>
+        <p>Pentru că înălțimea părintelui nu este definită. În flex, cel mai sigur este să folosești <code>align-stretch</code> sau calcule cu viewport (<code>vh</code>).</p>
+      </details>
+      <details>
+        <summary>De ce elementele mele depășesc containerul?</summary>
+        <p>Verifică <code>flex-shrink</code> (implicit 1). Dacă itemul are conținut inflexibil (imagine mare), setează dimensiuni max și overflow.</p>
+      </details>
+      <details>
+        <summary>Când folosesc Grid în loc de Flexbox?</summary>
+        <p>Flexbox = o dimensiune (un singur rând/coloană), Grid = două dimensiuni (rânduri + coloane) pentru layout-uri complexe.</p>
+      </details>
+    </section>
+
+    <section id="compatibilitate">
+      <h2>Compatibilitate & fallback</h2>
+      <p>Flexbox este suportat în toate browserele moderne. Probleme pot apărea pe versiuni vechi de IE/Android Browser. Pentru compatibilitate maximă folosește prefixări automate (<code>autoprefixer</code>).</p>
+    </section>
+
+    <section id="debug">
+      <h2>Debugging tips</h2>
+      <ul>
+        <li>Activează <strong>Layout > Flexbox overlay</strong> în devtools (Chrome/Firefox) pentru a vedea axele și spațiile.</li>
+        <li>Aplică temporar <code>outline:1px solid red</code> pe itemi pentru a vedea cum se dimensionează.</li>
+        <li>Verifică <code>min-width</code>/<code>min-height</code> pe itemi care nu se micșorează cum vrei.</li>
+      </ul>
+    </section>
+
+    <section id="resurse">
+      <h2>Resurse & sfaturi</h2>
+      <ul>
+        <li>Inspectorul din browser îți arată axele Flexbox (Firefox are un vizualizator foarte bun).</li>
+        <li>Folosește <code>gap</code> în loc de <code>margin</code> între itemi când e posibil.</li>
+        <li>Nu combina <code>float</code> cu flex decât dacă știi exact ce faci.</li>
+        <li>Pentru layout-uri foarte complicate pe 2D, ia în calcul CSS Grid.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>Realizat cu ❤️ în Flexbox. Copiază, modifică și învață!</p>
+    </footer>
+  </main>
+
+  <script>
+    // Butoane Copy
+    document.querySelectorAll('[data-copy]').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const code = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(code).then(()=>{
+          const old = btn.textContent;btn.textContent='Copiat!';
+          setTimeout(()=>btn.textContent=old,1500);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
